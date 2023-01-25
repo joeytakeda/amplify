@@ -119,6 +119,22 @@ class ImportRSSCommand extends Command
             }
         }
 
+        //TODO: Season handling--aggregate first, I think
+/*    case 'season':
+                case 'itunes:season':
+                    echo "Found season element\n";
+                    $seasonNum = intval($node->nodeValue);
+                    $thisSeason = $this->podcast->getSeasons()->filter(
+                        function(Season $season) use ($seasonNum) {
+                            return ($season->getNumber() === $seasonNum);
+                        });
+                        if (count($thisSeason) > 0){
+                        } else {
+                            echo 'DIDNT FIND THIS SEASON';
+                            // var_dump($thisSeason);
+                        }
+                    break;*/
+
         // Now let's do episodes;
         foreach($this->xpath->query('//channel/item') as $item) {
             $this->processEpisode($item);
@@ -129,22 +145,6 @@ class ImportRSSCommand extends Command
         $this->em->flush();
         $this->em->clear();
         return 0;
-
-
-
-        /*
-
-        foreach($xpath->query('//image/url') as $el){
-            $output->writeln($el->nodeValue);
-
-            // gets the response body as a string
-            $podcast->setSubtitle('Did this set?');
-            $output->writeln(var_dump($podcast));
-            $this->em->persist($podcast);
-        }; */
-
-
-
     }
 
     /**
@@ -174,22 +174,9 @@ class ImportRSSCommand extends Command
                         $episode->setDescription($node->nodeValue);
                     }
                     break;
-               // TODO: Add a season, if we need to (perhaps this would be better
-                // handled in a first pass?
-                case 'season':
-                case 'itunes:season':
-                    echo "Found season element\n";
-                    $seasonNum = intval($node->nodeValue);
-                    $thisSeason = $this->podcast->getSeasons()->filter(
-                       function(Season $season) use ($seasonNum) {
-                                 return ($season->getNumber() === $seasonNum);
-                             });
-                        if (count($thisSeason) > 0){
-                        } else {
-                            echo 'DIDNT FIND THIS SEASON';
-                           // var_dump($thisSeason);
-                        }
-                    break;
+
+                case 'itunes:episode':
+
             }
             $episode->setPodcast($this->podcast);
 
