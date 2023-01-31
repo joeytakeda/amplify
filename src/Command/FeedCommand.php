@@ -67,7 +67,7 @@ class FeedCommand extends Command
      * @var Feed | null
      */
     private $feed;
-    protected static $defaultName = 'app:import:feed';
+    protected static $defaultName = 'app:import:rss';
 
     protected const NS = [
         'content' => 'http://purl.org/rss/1.0/modules/content/',
