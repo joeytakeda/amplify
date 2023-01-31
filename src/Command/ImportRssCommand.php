@@ -7,6 +7,8 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
+/** NOTE: Work in progress  */
+
 namespace App\Command;
 
 use App\Entity\Podcast;
@@ -30,7 +32,7 @@ use Nines\MediaBundle\Entity\Image;
 use Nines\MediaBundle\Entity\Audio;
 use Nines\MediaBundle\Service\ImageManager;
 
-class FeedCommand extends Command
+class ImportRssCommand extends Command
 {
     /**
      * @var EntityManagerInterface
@@ -57,17 +59,6 @@ class FeedCommand extends Command
      */
     private $feed;
     protected static $defaultName = 'app:import:rss';
-
-    protected const NS = [
-        'content' => 'http://purl.org/rss/1.0/modules/content/',
-        'itunes' => 'http://www.itunes.com/dtds/podcast-1.0.dtd',
-        'dc' => 'http://purl.org/dc/elements/1.1/',
-        'atom' => 'http://www.w3.org/2005/Atom',
-        'googleplay' => 'http://www.google.com/schemas/play-podcasts/1.0',
-        'spotify' => 'http://www.spotify.com/ns/rss',
-        'podcast' => 'https://podcastindex.org/namespace/1.0',
-        'media' => 'http://search.yahoo.com/mrss/'
-    ];
 
     public function __construct(EntityManagerInterface $em, FeedIo $feedio)
     {
@@ -120,10 +111,11 @@ class FeedCommand extends Command
         /**
          * @var Feed
          */
-        $this->feed = $this->feedio->read($url)->getFeed();
-        $this->processPodcast();
+       // $this->feed = $this->feedio->read($url)->getFeed();
+      //  $this->processPodcast();
         return 1;
     }
+
 
     public function processPodcast(){
         $this->setPodcastImage();
@@ -172,7 +164,6 @@ class FeedCommand extends Command
                 $this->seasons[$season] = null;
             }
         }
-        echo var_dump($this->podcast->getSeasons());
     }
 
     /**
@@ -192,11 +183,10 @@ class FeedCommand extends Command
             $episode->setNumber($number);
             $episode->setRunTime(gmdate('H:i:s', intval($item->getValue('itunes:duration'))));
             $episode->setPodcast($this->podcast);
-            echo var_dump($episode);
             foreach($item->getMedias() as $media){
                 $type = $media->getType();
                 if ($type === 'audio/mpeg'){
-                   //$episode = $this->addAudioToEntity($media->getUrl(), $episode);
+                    //$episode = $this->addAudioToEntity($media->getUrl(), $episode);
                 }
             }
         }
@@ -222,7 +212,6 @@ class FeedCommand extends Command
         $audio->prePersist();
         $this->em->persist($audio);
         $entity->addAudio($audio);
-        var_dump($entity);
         return $entity;
     }
 
@@ -238,7 +227,6 @@ class FeedCommand extends Command
         $img->prePersist();
         $this->em->persist($img);
         $entity->addImage($img);
-        var_dump($entity);
     }
 
     /**
@@ -325,8 +313,5 @@ class FeedCommand extends Command
     public function setImageManager(ImageManager $imageManager) : void {
         $this->imageManager = $imageManager;
     }
-
-
-
 
 }
