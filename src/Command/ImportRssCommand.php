@@ -9,8 +9,6 @@ declare(strict_types=1);
 
 namespace App\Command;
 
-use FeedIo\Feed;
-use SimpleXMLElement;
 use App\Entity\Podcast;
 use App\Entity\Season;
 use App\Entity\Episode;
@@ -19,11 +17,7 @@ use App\Repository\PodcastRepository;
 use App\Repository\SeasonRepository;
 use App\Repository\EpisodeRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use League\Csv\Reader;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Encoder\XmlEncoder;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-use Symfony\Component\Serializer\Serializer;
+use FeedIo\FeedIo;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -31,11 +25,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\HttpClient\HttpClient;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\File\File;
-use FeedIo\FeedIo;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Nines\MediaBundle\Entity\Image;
 use Nines\MediaBundle\Entity\Audio;
@@ -285,7 +274,6 @@ class FeedCommand extends Command
     public function testAudio(){
         $episode = $this->episodeRepository->find('19');
         $episode = $this->addAudioToEntity('https://secretfeministagenda.files.wordpress.com/2017/06/sfa-1-0.mp3', $episode);
-        echo var_dump($episode);
         $this->em->persist($episode);
         $this->em->flush();
         $this->em->clear();
